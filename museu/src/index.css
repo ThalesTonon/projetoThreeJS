@@ -12,57 +12,61 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Remova margens e espaçamento padrão do body */
 body {
   margin: 0;
+  padding: 0;
+  overflow: hidden; /* Impede barras de rolagem */
+  height: 100%;
+  width: 100%;
+}
+
+/* Certifique-se de que o canvas ocupe toda a janela */
+canvas {
+  display: block; /* Remove margem/padding adicionais */
+  position: absolute; /* Posiciona fixamente na tela */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Estilo para a tela de boas-vindas */
+.welcome-screen,
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8); /* Fundo semitransparente */
+  color: white;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10; /* Fica acima do canvas */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.welcome-screen h1,
+.loading-screen p {
+  margin: 0.5rem;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.welcome-screen button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background: #ff9800;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  transition: background 0.3s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.welcome-screen button:hover {
+  background: #e68900;
 }

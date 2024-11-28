@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import setupScene from "./components/SceneSetup";
+import "./index.css";
 
 const MuseuApp = () => {
+  const [isStarted, setIsStarted] = useState(false);
+  const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
+
   useEffect(() => {
-    // Configuração básica
+    if (!isStarted) return;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -15,27 +20,12 @@ const MuseuApp = () => {
     );
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true; // Habilitar sombras
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Sombras suaves
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
-    // Configurar a cena com setupScene
     setupScene(scene);
 
-    // Luzes adicionais
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(5, 10, 5);
-    directionalLight.castShadow = true; // Projeta sombras
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 50;
-    scene.add(directionalLight);
-
-    // Avatar
     const loader = new GLTFLoader();
     let avatarGroup = new THREE.Group();
     let mixer = null;
@@ -43,33 +33,41 @@ const MuseuApp = () => {
     let walkAction = null;
     let currentAction = null;
 
-    loader.load("/adam.glb", (gltf) => {
-      const avatar = gltf.scene;
-      avatar.scale.set(1, 1, 1);
-      avatar.traverse((child) => {
-        if (child.isMesh) {
-          child.castShadow = true; // Avatar projeta sombras
+    loader.load(
+      "/adam.glb",
+      (gltf) => {
+        const avatar = gltf.scene;
+        avatar.scale.set(1, 1, 1);
+        avatar.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+          }
+        });
+        avatarGroup.add(avatar);
+        scene.add(avatarGroup);
+
+        // Configure animations
+        mixer = new THREE.AnimationMixer(avatar);
+        idleAction = mixer.clipAction(
+          gltf.animations.find((clip) => clip.name === "idle")
+        );
+        walkAction = mixer.clipAction(
+          gltf.animations.find((clip) => clip.name === "walk")
+        );
+
+        if (idleAction) {
+          currentAction = idleAction;
+          idleAction.play();
         }
-      });
-      avatarGroup.add(avatar);
-      scene.add(avatarGroup);
 
-      // Configurar animações
-      mixer = new THREE.AnimationMixer(avatar);
-      idleAction = mixer.clipAction(
-        gltf.animations.find((clip) => clip.name === "idle")
-      );
-      walkAction = mixer.clipAction(
-        gltf.animations.find((clip) => clip.name === "walk")
-      );
-
-      if (idleAction) {
-        currentAction = idleAction;
-        idleAction.play();
+        setIsAvatarLoaded(true); // Avatar loaded
+      },
+      undefined,
+      (error) => {
+        console.error("Error loading avatar:", error);
       }
-    });
+    );
 
-    // Movimentação do avatar
     const keysPressed = {};
     const direction = new THREE.Vector3();
     const velocity = new THREE.Vector3();
@@ -99,7 +97,7 @@ const MuseuApp = () => {
     });
 
     const constrainPosition = (position) => {
-      const limit = 9; // Limites internos do museu
+      const limit = 9;
       position.x = THREE.MathUtils.clamp(position.x, -limit, limit);
       position.z = THREE.MathUtils.clamp(position.z, -limit, limit);
     };
@@ -107,20 +105,17 @@ const MuseuApp = () => {
     const updateCamera = () => {
       if (avatarGroup) {
         const avatarPosition = avatarGroup.position;
-        const cameraOffset = new THREE.Vector3(0, 2, -3); // Mais próximo do avatar
+        const cameraOffset = new THREE.Vector3(0, 2, -3);
         const rotatedOffset = cameraOffset
           .clone()
           .applyEuler(new THREE.Euler(0, avatarGroup.rotation.y, 0));
         const targetPosition = avatarPosition.clone().add(rotatedOffset);
 
-        // Ajustar altura para evitar travamentos
         targetPosition.y = Math.max(avatarPosition.y + cameraOffset.y, 1);
-
-        // Evitar que a câmera entre nas paredes
         targetPosition.x = THREE.MathUtils.clamp(targetPosition.x, -8.5, 8.5);
         targetPosition.z = THREE.MathUtils.clamp(targetPosition.z, -8.5, 8.5);
 
-        camera.position.lerp(targetPosition, 0.2); // Movimento suave
+        camera.position.lerp(targetPosition, 0.2);
         camera.lookAt(avatarPosition.clone().add(new THREE.Vector3(0, 1.5, 0)));
       }
     };
@@ -135,7 +130,7 @@ const MuseuApp = () => {
       if (avatarGroup) {
         direction.set(0, 0, 0);
 
-        if (keysPressed["w"]) direction.z = 0.2; // Reduzida para maior controle
+        if (keysPressed["w"]) direction.z = 0.2;
         if (keysPressed["s"]) direction.z = -0.2;
         if (keysPressed["a"]) avatarGroup.rotation.y += delta * 2;
         if (keysPressed["d"]) avatarGroup.rotation.y -= delta * 2;
@@ -153,7 +148,6 @@ const MuseuApp = () => {
 
     animate();
 
-    // Ajuste de janela
     window.addEventListener("resize", () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -163,9 +157,24 @@ const MuseuApp = () => {
     return () => {
       document.body.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [isStarted]);
 
-  return null; // Não renderiza diretamente no React
+  return (
+    <>
+      {!isStarted && (
+        <div className="welcome-screen">
+          <h1>Bem-vindo ao Museu Virtual</h1>
+          <p>Explore um mundo interativo e aprenda mais!</p>
+          <button onClick={() => setIsStarted(true)}>Iniciar</button>
+        </div>
+      )}
+      {isStarted && !isAvatarLoaded && (
+        <div className="loading-screen">
+          <p>Carregando avatar...</p>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default MuseuApp;
