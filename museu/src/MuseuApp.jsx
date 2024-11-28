@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import setupScene from "./components/SceneSetup";
 
-const MuseumApp = () => {
+const MuseuApp = () => {
   useEffect(() => {
     // Configuração básica
     const scene = new THREE.Scene();
@@ -15,17 +15,24 @@ const MuseumApp = () => {
     );
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true; // Habilitar sombras
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Sombras suaves
     document.body.appendChild(renderer.domElement);
 
     // Configurar a cena com setupScene
     setupScene(scene);
 
     // Luzes adicionais
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
     directionalLight.position.set(5, 10, 5);
+    directionalLight.castShadow = true; // Projeta sombras
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
     scene.add(directionalLight);
 
     // Avatar
@@ -39,6 +46,11 @@ const MuseumApp = () => {
     loader.load("/adam.glb", (gltf) => {
       const avatar = gltf.scene;
       avatar.scale.set(1, 1, 1);
+      avatar.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true; // Avatar projeta sombras
+        }
+      });
       avatarGroup.add(avatar);
       scene.add(avatarGroup);
 
@@ -156,4 +168,4 @@ const MuseumApp = () => {
   return null; // Não renderiza diretamente no React
 };
 
-export default MuseumApp;
+export default MuseuApp;

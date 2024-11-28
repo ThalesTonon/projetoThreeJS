@@ -1,75 +1,101 @@
 import * as THREE from "three";
 
+const addLuminaria = (x, y, z, scene) => {
+  // Criar o círculo da luminária no teto
+  const circle = new THREE.Mesh(
+    new THREE.CircleGeometry(0.5, 32), // Luminária em formato de círculo
+    new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0xffffff, // Emitir luz visível
+      emissiveIntensity: 0.6, // Intensidade da emissão
+      side: THREE.DoubleSide, // Visível de ambos os lados
+    })
+  );
+  circle.rotation.x = Math.PI / 2; // Orientar paralelamente ao teto
+  circle.position.set(x, y, z);
+
+  // Adicionar luz pontual à luminária
+  const pointLight = new THREE.PointLight(0xffe6b8, 1, 10); // Luz amarelada
+  pointLight.position.set(x, y - 0.2, z); // Posicionar ligeiramente abaixo da luminária
+
+  scene.add(circle, pointLight);
+};
+
 const setupScene = (scene) => {
   const textureLoader = new THREE.TextureLoader();
-  const floorTexture = textureLoader.load("/textures/floor.jpg");
+
   // Piso
-  const floorGeometry = new THREE.PlaneGeometry(20, 20);
-  const floorMaterial = new THREE.MeshStandardMaterial({ map: floorTexture });
-  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  const floorTexture = textureLoader.load("/textures/floor.jpg");
+  floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+  floorTexture.repeat.set(4, 4);
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20),
+    new THREE.MeshStandardMaterial({
+      map: floorTexture,
+      roughness: 0.8,
+      metalness: 0.1,
+    })
+  );
   floor.rotation.x = -Math.PI / 2;
   scene.add(floor);
 
   // Paredes
   const wallTexture = textureLoader.load("/textures/wall.jpg");
-  const wallMaterial = new THREE.MeshStandardMaterial({ map: wallTexture });
+  const wallMaterial = new THREE.MeshStandardMaterial({
+    map: wallTexture,
+    roughness: 0.6,
+    metalness: 0.1,
+  });
 
-  const backWall = new THREE.Mesh(
-    new THREE.BoxGeometry(20, 3, 1),
-    wallMaterial
-  ); // Altura reduzida para 5
-  backWall.position.set(0, 1.5, -10); // Y = 2.5 (metade da altura)
-  scene.add(backWall);
+  const walls = [
+    { position: [0, 1.5, -10], size: [20, 3, 1] },
+    { position: [0, 1.5, 10], size: [20, 3, 1] },
+    { position: [-10, 1.5, 0], size: [1, 3, 20] },
+    { position: [10, 1.5, 0], size: [1, 3, 20] },
+  ];
 
-  const frontWall = new THREE.Mesh(
-    new THREE.BoxGeometry(20, 3, 1),
-    wallMaterial
-  );
-  frontWall.position.set(0, 1.5, 10);
-  scene.add(frontWall);
-
-  const sideWall1 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 3, 20),
-    wallMaterial
-  );
-  sideWall1.position.set(-10, 1.5, 0);
-  scene.add(sideWall1);
-
-  const sideWall2 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 3, 20),
-    wallMaterial
-  );
-  sideWall2.position.set(10, 1.5, 0);
-  scene.add(sideWall2);
+  walls.forEach(({ position, size }) => {
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(...size), wallMaterial);
+    wall.position.set(...position);
+    scene.add(wall);
+  });
 
   // Teto
-  const ceilingGeometry = new THREE.PlaneGeometry(20, 20);
-  const ceilingMaterial = new THREE.MeshStandardMaterial({ map: floorTexture });
-  const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+  const ceilingMaterial = new THREE.MeshStandardMaterial({
+    map: floorTexture,
+    roughness: 0.9,
+    metalness: 0.05,
+  });
+  const ceiling = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20),
+    ceilingMaterial
+  );
   ceiling.rotation.x = Math.PI / 2;
-  ceiling.position.y = 3; // Ajustar para corresponder à nova altura da parede
+  ceiling.position.y = 3;
   scene.add(ceiling);
 
-  // Pontos de luz no teto
-  const addPointLight = (x, z) => {
-    const pointLight = new THREE.PointLight(0xffffff, 1, 10); // Cor, intensidade, alcance
-    pointLight.position.set(x, 2.5, z); // Altura ajustada abaixo do teto
-    scene.add(pointLight);
+  // Luminárias no teto
+  const luminariaPositions = [
+    [-5, 2.98, -5],
+    [5, 2.98, -5],
+    [-5, 2.98, 5],
+    [5, 2.98, 5],
+  ];
+  luminariaPositions.forEach(([x, y, z]) => addLuminaria(x, y, z, scene));
 
-    // Opcional: adicionar uma esfera para representar a luminária
-    const lightSphere = new THREE.Mesh(
-      new THREE.SphereGeometry(0.2),
-      new THREE.MeshBasicMaterial({ color: 0xffffff })
-    );
-    lightSphere.position.set(x, 2.5, z); // Abaixo do teto
-    scene.add(lightSphere);
-  };
+  // Luz direcional
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(5, 10, 5);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.width = 2048;
+  directionalLight.shadow.mapSize.height = 2048;
+  directionalLight.shadow.camera.near = 0.5;
+  directionalLight.shadow.camera.far = 50;
+  scene.add(directionalLight);
 
-  // Adicionar luzes em posições diferentes
-  addPointLight(-5, -5); // Luz 1
-  addPointLight(5, -5); // Luz 2
-  addPointLight(-5, 5); // Luz 3
-  addPointLight(5, 5); // Luz 4
+  // Luz ambiente
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Reduzida para não ofuscar as luzes pontuais
+  scene.add(ambientLight);
 };
 
 export default setupScene;
