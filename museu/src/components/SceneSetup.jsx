@@ -3,20 +3,19 @@ import * as THREE from "three";
 const addLuminaria = (x, y, z, scene) => {
   // Criar o círculo da luminária no teto
   const circle = new THREE.Mesh(
-    new THREE.CircleGeometry(0.5, 32), // Luminária em formato de círculo
+    new THREE.CircleGeometry(0.5, 32),
     new THREE.MeshStandardMaterial({
       color: 0xffffff,
-      emissive: 0xffffff, // Emitir luz visível
-      emissiveIntensity: 0.6, // Intensidade da emissão
-      side: THREE.DoubleSide, // Visível de ambos os lados
+      emissive: 0xffffff,
+      emissiveIntensity: 0.6,
+      side: THREE.DoubleSide,
     })
   );
-  circle.rotation.x = Math.PI / 2; // Orientar paralelamente ao teto
+  circle.rotation.x = Math.PI / 2;
   circle.position.set(x, y, z);
 
-  // Adicionar luz pontual à luminária
-  const pointLight = new THREE.PointLight(0xffe6b8, 1, 10); // Luz amarelada
-  pointLight.position.set(x, y - 0.2, z); // Posicionar ligeiramente abaixo da luminária
+  const pointLight = new THREE.PointLight(0xffe6b8, 1, 10);
+  pointLight.position.set(x, y - 0.2, z);
 
   scene.add(circle, pointLight);
 };
@@ -94,7 +93,7 @@ const setupScene = (scene) => {
   scene.add(directionalLight);
 
   // Luz ambiente
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Reduzida para não ofuscar as luzes pontuais
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
   scene.add(ambientLight);
 };
 

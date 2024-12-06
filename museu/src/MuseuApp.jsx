@@ -7,46 +7,48 @@ import "./index.css";
 const MuseuApp = () => {
   const [isStarted, setIsStarted] = useState(false);
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
+  const [nearbyArtwork, setNearbyArtwork] = useState(null);
 
   useEffect(() => {
     if (!isStarted) return;
 
     const scene = new THREE.Scene();
+
+    const renderer = new THREE.WebGLRenderer({ antialias: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
+    renderer.shadowMap.enabled = false;
+
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild(renderer.domElement);
+
+    const container = document.querySelector(".three-container");
+    container.appendChild(renderer.domElement);
 
     setupScene(scene);
 
-    const loader = new GLTFLoader();
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
     let avatarGroup = new THREE.Group();
     let mixer = null;
     let idleAction = null;
     let walkAction = null;
     let currentAction = null;
 
+    const loader = new GLTFLoader();
     loader.load(
       "/adam.glb",
       (gltf) => {
         const avatar = gltf.scene;
         avatar.scale.set(1, 1, 1);
-        avatar.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-          }
-        });
         avatarGroup.add(avatar);
         scene.add(avatarGroup);
 
-        // Configure animations
         mixer = new THREE.AnimationMixer(avatar);
         idleAction = mixer.clipAction(
           gltf.animations.find((clip) => clip.name === "idle")
@@ -60,7 +62,7 @@ const MuseuApp = () => {
           idleAction.play();
         }
 
-        setIsAvatarLoaded(true); // Avatar loaded
+        setIsAvatarLoaded(true);
       },
       undefined,
       (error) => {
@@ -82,19 +84,22 @@ const MuseuApp = () => {
       }
     };
 
-    window.addEventListener("keydown", (event) => {
+    const keyDownHandler = (event) => {
       keysPressed[event.key.toLowerCase()] = true;
       if (walkAction && (keysPressed["w"] || keysPressed["s"])) {
         switchAnimation(walkAction);
       }
-    });
+    };
 
-    window.addEventListener("keyup", (event) => {
+    const keyUpHandler = (event) => {
       keysPressed[event.key.toLowerCase()] = false;
       if (idleAction && !keysPressed["w"] && !keysPressed["s"]) {
         switchAnimation(idleAction);
       }
-    });
+    };
+
+    window.addEventListener("keydown", keyDownHandler);
+    window.addEventListener("keyup", keyUpHandler);
 
     const constrainPosition = (position) => {
       const limit = 9;
@@ -122,8 +127,138 @@ const MuseuApp = () => {
 
     const clock = new THREE.Clock();
 
+    const artworksData = [
+      {
+        name: "Buddha near Peshawar, Pakistan",
+        description:
+          "Esta é uma representação de Buda de 2.000 anos, encontrada próxima a Peshawar, no Paquistão. Este artefato da era Gandara é conhecido por sua fusão única de influências greco-romanas e indianas. Representa a serenidade do Buda e simboliza a disseminação do Budismo ao longo da Rota da Seda.",
+        urlObj: "/buddha.glb",
+        scale: { x: 2, y: 2, z: 2 },
+        positionOffset: { x: 0, y: 1, z: 0 },
+        rotationOffset: { x: 0, y: -28, z: 0 },
+      },
+      {
+        name: "Effigy of a Knight, Victoria and Albert",
+        description:
+          "Uma efígie de um cavaleiro em armadura completa, datada de 1340-1350, encontrada no Reino Unido. Representa um cavaleiro em oração, com as pernas cruzadas, simbolizando sua devoção e possivelmente uma cruzada. Esta peça é um exemplo impressionante da arte funerária medieval.",
+        urlObj: "/effigy.glb",
+        scale: { x: 0.8, y: 0.8, z: 0.8 },
+        positionOffset: { x: 0, y: 1.0, z: 0 },
+        rotationOffset: { x: 0, y: -14, z: 0 },
+      },
+      {
+        name: "Mourning Female Servant, Altes Museum",
+        description:
+          "Uma escultura de mármore do século IV a.C., representando uma serva em posição de luto. Originária da Grécia antiga, esta peça fazia parte de um monumento funerário e simboliza o respeito e a reverência aos falecidos, refletindo as tradições funerárias gregas.",
+        urlObj: "/mourning.glb",
+        scale: { x: 2, y: 2, z: 2 },
+        positionOffset: { x: 0, y: 0, z: 0 },
+        rotationOffset: { x: 0, y: 6.28, z: 0 },
+      },
+      {
+        name: "Angel Sculpture by Matteo Civitali",
+        description:
+          "Escultura renascentista criada por Matteo Civitali, representando um anjo em postura graciosa e em oração. Esta peça foi projetada para adornar um tabernáculo sagrado, destacando o senso de espiritualidade e a atenção aos detalhes típicos do Renascimento italiano.",
+        urlObj: "/angel_sculpture_by_matteo_civitali.glb",
+        scale: { x: 2, y: 2, z: 2 },
+        positionOffset: { x: 0, y: 1, z: 0 },
+        rotationOffset: { x: 0, y: 2, z: 0 },
+      },
+      {
+        name: "Muttergottes (Virgin Mary), Liebighaus Frankfurt",
+        description:
+          "Uma impressionante escultura gótica da Virgem Maria, datada de cerca de 1470 e originária de Estrasburgo. Representa Maria entronizada com o Menino Jesus, simbolizando sua maternidade divina e sua relevância no cristianismo medieval. Sua policromia original e os detalhes refinados destacam a maestria do estilo gótico.",
+        urlObj: "/muttergottes.glb",
+        scale: { x: 4, y: 4, z: 4 },
+        positionOffset: { x: 0, y: 1, z: 0 },
+        rotationOffset: { x: 0, y: 0, z: 0 },
+      },
+      {
+        name: "Pillar-shaped Cippus, Altes Museum, Berlin",
+        description:
+          "Um cipo em forma de pilar, datado do período romano, encontrado na região do Mediterrâneo. Este tipo de monumento era frequentemente usado como marcador funerário ou como inscrição comemorativa. Decorado com relevos intrincados, ele reflete a estética e as práticas culturais da época.",
+        urlObj: "/pillar_cippus.glb",
+        scale: { x: 1.5, y: 3, z: 1.5 },
+        positionOffset: { x: 0, y: 0, z: 0 },
+        rotationOffset: { x: 0, y: 0, z: 0 },
+      },
+    ];
+
+    const radius = 6;
+    const artworks = artworksData.map((art, i) => {
+      const angle = ((2 * Math.PI) / artworksData.length) * i;
+      const x = radius * Math.cos(angle);
+      const z = radius * Math.sin(angle);
+      return {
+        ...art,
+        position: new THREE.Vector3(x, 0, z),
+        radius: 1,
+      };
+    });
+
+    const artLoader = new GLTFLoader();
+
+    const loadPromises = artworks.map(
+      (art) =>
+        new Promise((resolve, reject) => {
+          artLoader.load(
+            art.urlObj,
+            (gltf) => resolve({ art, gltf }),
+            undefined,
+            (err) => {
+              console.error(`Erro ao carregar ${art.name}`, err);
+              reject(err);
+            }
+          );
+        })
+    );
+
+    Promise.all(loadPromises).then((results) => {
+      results.forEach(({ art, gltf }) => {
+        const circleGeometry = new THREE.CircleGeometry(art.radius, 16);
+        const circleMaterial = new THREE.MeshBasicMaterial({
+          color: 0x0000ff,
+          opacity: 0.3,
+          transparent: true,
+          side: THREE.DoubleSide,
+        });
+        const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+        circle.rotation.x = -Math.PI / 2;
+        circle.position.copy(art.position);
+        circle.position.y = 0.0001;
+        scene.add(circle);
+
+        const artworkObj = gltf.scene;
+        artworkObj.scale.set(art.scale.x, art.scale.y, art.scale.z);
+        artworkObj.position.copy(art.position);
+        artworkObj.position.x += art.positionOffset.x;
+        artworkObj.position.y += art.positionOffset.y;
+        artworkObj.position.z += art.positionOffset.z;
+
+        artworkObj.rotation.x += art.rotationOffset.x;
+        artworkObj.rotation.y += art.rotationOffset.y;
+        artworkObj.rotation.z += art.rotationOffset.z;
+
+        scene.add(artworkObj);
+      });
+    });
+
+    let prevArtwork = null;
+    let frameCount = 0;
+    let lastTime = performance.now();
+    const desiredFPS = 30;
+    const msPerFrame = 1000 / desiredFPS;
+    let animationFrameId;
+
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
+      const now = performance.now();
+      const elapsed = now - lastTime;
+      if (elapsed < msPerFrame) {
+        return;
+      }
+      lastTime = now - (elapsed % msPerFrame);
+
       const delta = clock.getDelta();
       if (mixer) mixer.update(delta);
 
@@ -140,6 +275,23 @@ const MuseuApp = () => {
         avatarGroup.position.add(velocity);
         constrainPosition(avatarGroup.position);
         velocity.multiplyScalar(0.9);
+
+        if (frameCount % 5 === 0 && artworks.length > 0) {
+          let inRangeArtwork = null;
+          for (const art of artworks) {
+            const dist = avatarGroup.position.distanceTo(art.position);
+            if (dist <= art.radius) {
+              inRangeArtwork = art;
+              break;
+            }
+          }
+
+          if (inRangeArtwork !== prevArtwork) {
+            prevArtwork = inRangeArtwork;
+            setNearbyArtwork(inRangeArtwork);
+          }
+        }
+        frameCount++;
       }
 
       updateCamera();
@@ -148,14 +300,33 @@ const MuseuApp = () => {
 
     animate();
 
-    window.addEventListener("resize", () => {
+    const resizeHandler = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    };
 
+    window.addEventListener("resize", resizeHandler);
+
+    // Limpeza na desmontagem ou quando isStarted mudar
     return () => {
-      document.body.removeChild(renderer.domElement);
+      window.removeEventListener("keydown", keyDownHandler);
+      window.removeEventListener("keyup", keyUpHandler);
+      window.removeEventListener("resize", resizeHandler);
+
+      if (container && renderer.domElement.parentNode === container) {
+        container.removeChild(renderer.domElement);
+      }
+
+      // Cancelar a animação para não continuar rodando após desmontagem
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+
+      // Opcional: Dispose de geometrias e materiais se estiver recriando com frequência
+      // circleGeometry.dispose();
+      // circleMaterial.dispose();
+      // etc.
     };
   }, [isStarted]);
 
@@ -168,9 +339,42 @@ const MuseuApp = () => {
           <button onClick={() => setIsStarted(true)}>Iniciar</button>
         </div>
       )}
-      {isStarted && !isAvatarLoaded && (
-        <div className="loading-screen">
-          <p>Carregando avatar...</p>
+      {isStarted && (
+        <div className="three-container" style={{ position: "relative" }}>
+          {!isAvatarLoaded && (
+            <div className="loading-screen">
+              <p>Carregando avatar...</p>
+            </div>
+          )}
+          {isAvatarLoaded && !nearbyArtwork && (
+            <div
+              className="camera-info"
+              style={{
+                position: "absolute",
+                top: "10px",
+                left: "10px",
+                background: "rgba(0,0,0,0.5)",
+                padding: "5px",
+                color: "#fff",
+              }}
+            >
+              <p>
+                Fique dentro do círculo azul para ver informações sobre a obra.
+              </p>
+            </div>
+          )}
+          {isAvatarLoaded && nearbyArtwork && (
+            <div className="artwork-info">
+              <button
+                className="close-btn"
+                onClick={() => setNearbyArtwork(null)}
+              >
+                ×
+              </button>
+              <h2>{nearbyArtwork.name}</h2>
+              <p>{nearbyArtwork.description}</p>
+            </div>
+          )}
         </div>
       )}
     </>
