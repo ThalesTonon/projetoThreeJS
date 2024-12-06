@@ -60,15 +60,11 @@ canvas {
   padding: 1rem 2rem;
   font-size: 1rem;
   cursor: pointer;
-  background: #ff9800;
+  background: #118dd8;
   border: none;
   border-radius: 5px;
   color: white;
   transition: background 0.3s ease;
-}
-
-.welcome-screen button:hover {
-  background: #e68900;
 }
 
 .three-container {
@@ -119,9 +115,17 @@ canvas {
   color: #333;
   padding: 0;
 }
+.artwork-info a {
+  padding: 0.5em 1em;
+  background: #118dd8;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-.artwork-info .close-btn:hover {
-  color: #000;
+  margin-top: 10px;
 }
 
 /* Animação de fade-in */

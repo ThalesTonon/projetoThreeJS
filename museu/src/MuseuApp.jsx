@@ -132,6 +132,7 @@ const MuseuApp = () => {
         name: "Buddha near Peshawar, Pakistan",
         description:
           "Esta é uma representação de Buda de 2.000 anos, encontrada próxima a Peshawar, no Paquistão. Este artefato da era Gandara é conhecido por sua fusão única de influências greco-romanas e indianas. Representa a serenidade do Buda e simboliza a disseminação do Budismo ao longo da Rota da Seda.",
+        link: "https://en.wikipedia.org/wiki/Buddhism_in_Pakistan",
         urlObj: "/buddha.glb",
         scale: { x: 2, y: 2, z: 2 },
         positionOffset: { x: 0, y: 1, z: 0 },
@@ -141,6 +142,7 @@ const MuseuApp = () => {
         name: "Effigy of a Knight, Victoria and Albert",
         description:
           "Uma efígie de um cavaleiro em armadura completa, datada de 1340-1350, encontrada no Reino Unido. Representa um cavaleiro em oração, com as pernas cruzadas, simbolizando sua devoção e possivelmente uma cruzada. Esta peça é um exemplo impressionante da arte funerária medieval.",
+        link: "https://collections.vam.ac.uk/item/O14763/recumbent-effigy-of-a-knight-effigy-unknown/",
         urlObj: "/effigy.glb",
         scale: { x: 0.8, y: 0.8, z: 0.8 },
         positionOffset: { x: 0, y: 1.0, z: 0 },
@@ -150,6 +152,7 @@ const MuseuApp = () => {
         name: "Mourning Female Servant, Altes Museum",
         description:
           "Uma escultura de mármore do século IV a.C., representando uma serva em posição de luto. Originária da Grécia antiga, esta peça fazia parte de um monumento funerário e simboliza o respeito e a reverência aos falecidos, refletindo as tradições funerárias gregas.",
+        link: "https://artsandculture.google.com/asset/servant-girls-mourning-at-a-grave-unknown/2AHWogySHNOL6A?hl=en",
         urlObj: "/mourning.glb",
         scale: { x: 2, y: 2, z: 2 },
         positionOffset: { x: 0, y: 0, z: 0 },
@@ -159,6 +162,7 @@ const MuseuApp = () => {
         name: "Angel Sculpture by Matteo Civitali",
         description:
           "Escultura renascentista criada por Matteo Civitali, representando um anjo em postura graciosa e em oração. Esta peça foi projetada para adornar um tabernáculo sagrado, destacando o senso de espiritualidade e a atenção aos detalhes típicos do Renascimento italiano.",
+        link: "https://collections.vam.ac.uk/item/O12534/angel-statue-civitali-matteo/",
         urlObj: "/angel_sculpture_by_matteo_civitali.glb",
         scale: { x: 2, y: 2, z: 2 },
         positionOffset: { x: 0, y: 1, z: 0 },
@@ -168,6 +172,7 @@ const MuseuApp = () => {
         name: "Muttergottes (Virgin Mary), Liebighaus Frankfurt",
         description:
           "Uma impressionante escultura gótica da Virgem Maria, datada de cerca de 1470 e originária de Estrasburgo. Representa Maria entronizada com o Menino Jesus, simbolizando sua maternidade divina e sua relevância no cristianismo medieval. Sua policromia original e os detalhes refinados destacam a maestria do estilo gótico.",
+        link: "https://www.liebieghaus.de/en/mittelalter/virgin-mary-annunciation-group",
         urlObj: "/muttergottes.glb",
         scale: { x: 4, y: 4, z: 4 },
         positionOffset: { x: 0, y: 1, z: 0 },
@@ -177,6 +182,7 @@ const MuseuApp = () => {
         name: "Pillar-shaped Cippus, Altes Museum, Berlin",
         description:
           "Um cipo em forma de pilar, datado do período romano, encontrado na região do Mediterrâneo. Este tipo de monumento era frequentemente usado como marcador funerário ou como inscrição comemorativa. Decorado com relevos intrincados, ele reflete a estética e as práticas culturais da época.",
+        link: "https://www.flickr.com/photos/carolemage/5343973958",
         urlObj: "/pillar_cippus.glb",
         scale: { x: 1.5, y: 3, z: 1.5 },
         positionOffset: { x: 0, y: 0, z: 0 },
@@ -217,7 +223,7 @@ const MuseuApp = () => {
       results.forEach(({ art, gltf }) => {
         const circleGeometry = new THREE.CircleGeometry(art.radius, 16);
         const circleMaterial = new THREE.MeshBasicMaterial({
-          color: 0x0000ff,
+          color: 0x118dd8,
           opacity: 0.3,
           transparent: true,
           side: THREE.DoubleSide,
@@ -323,10 +329,13 @@ const MuseuApp = () => {
         cancelAnimationFrame(animationFrameId);
       }
 
-      // Opcional: Dispose de geometrias e materiais se estiver recriando com frequência
-      // circleGeometry.dispose();
-      // circleMaterial.dispose();
-      // etc.
+      // Limpar a cena asas
+      scene.remove(avatarGroup);
+      scene.remove(
+        ...scene.children.filter(
+          (child) => child.type === "Mesh" || child.type === "Group"
+        )
+      );
     };
   }, [isStarted]);
 
@@ -337,6 +346,8 @@ const MuseuApp = () => {
           <h1>Bem-vindo ao Museu Virtual</h1>
           <p>Explore um mundo interativo e aprenda mais!</p>
           <button onClick={() => setIsStarted(true)}>Iniciar</button>
+
+          <p> Por Matheus Viana, Thales e Webert </p>
         </div>
       )}
       {isStarted && (
@@ -373,6 +384,9 @@ const MuseuApp = () => {
               </button>
               <h2>{nearbyArtwork.name}</h2>
               <p>{nearbyArtwork.description}</p>
+              <a href={nearbyArtwork.link} target="_blank" rel="noreferrer">
+                Saiba mais
+              </a>
             </div>
           )}
         </div>
