@@ -34,11 +34,11 @@ Este projeto apresenta um museu virtual interativo desenvolvido em Three.js, no 
 
 1. **Clonar o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/ThalesTonon/projetoThreeJS.git
    ```
 2. **Instalar as dependências:**
    ```bash
-   cd seu-repositorio
+   cd projetoThreeJS/museu
    npm install
    ```
    ou
@@ -48,7 +48,7 @@ Este projeto apresenta um museu virtual interativo desenvolvido em Three.js, no 
 3. **Executar a aplicação em modo de desenvolvimento:**
 
    ```bash
-   npm start
+   npm run dev
    ```
 
    ou
@@ -58,7 +58,7 @@ Este projeto apresenta um museu virtual interativo desenvolvido em Three.js, no 
    ```
 
    Após a execução, abra o navegador e acesse:
-   [http://localhost:3000](http://localhost:3000)
+   [http://localhost:5173](http://localhost:5173/)
 
 4. **Build de produção:**
 
@@ -72,7 +72,7 @@ Este projeto apresenta um museu virtual interativo desenvolvido em Three.js, no 
    yarn build
    ```
 
-   Os arquivos otimizados serão gerados na pasta `dist` ou `build` conforme sua configuração.
+   Os arquivos otimizados serão gerados na pasta `dist`.
 
 5. **Execução local estática:**
    ```bash
@@ -93,36 +93,30 @@ Ao entrar em um círculo azul, informações sobre a obra correspondente serão 
 
 **Modelos 3D:**
 
-- Adam (avatar): [Fonte do Modelo / Licença se houver]
-- Demais modelos (Buddha, Effigy, Angel Sculpture, etc.): Links e créditos conforme indicado no código e no projeto. Cada obra possui um link contextual no pop-up de informações.
-  - Buddha near Peshawar, Pakistan
-  - Effigy of a Knight, Victoria and Albert Museum
-  - Mourning Female Servant, Altes Museum
-  - Angel Sculpture by Matteo Civitali
-  - Muttergottes (Virgin Mary), Liebighaus Frankfurt
-  - Pillar-shaped Cippus, Altes Museum, Berlin
+- Adam (avatar): [Fonte do Modelo](https://www.mixamo.com/#/?page=1&query=adam&type=Character)
+- Demais modelos (Buddha, Effigy, Angel Sculpture, etc.): Links e créditos conforme indicado no código e no projeto. Cada obra possui um link contextual no pop-up de informações. Fonte de todas as artes: [Sketchfab](https://sketchfab.com/)
+  - [Buddha near Peshawar, Pakistan](https://sketchfab.com/3d-models/buddha-near-peshawar-pakistan-28f352a2a67f42c7a3f4b148410b3dce)
+  - [Effigy of a Knight, Victoria and Albert Museum](https://sketchfab.com/3d-models/effigy-of-a-knight-victoria-and-albert-museum-74f83358216a4698b7322faa0132c78b)
+  - [Mourning Female Servant, Altes Museum](https://sketchfab.com/3d-models/mourning-female-servant-altes-museum-berlin-e615dd96a3d8463d903dad78f76db7ba)
+  - [Angel Sculpture by Matteo Civitali](https://sketchfab.com/3d-models/angel-sculpture-by-matteo-civitali-c44411ccbd97489ab3097a0e09a3d137)
+  - [Muttergottes (Virgin Mary), Liebighaus Frankfurt](https://sketchfab.com/3d-models/muttergottes-virgin-mary-liebighaus-frankfurt-2ebb8d700e0e410f9c22e62972b2e57b)
+  - [Pillar-shaped Cippus, Altes Museum, Berlin](https://sketchfab.com/3d-models/pillar-shaped-cippus-altes-museum-berlin-ecc6ec191b214ba49d73b7c7aa29cc7f)
 
 **Texturas:**
 
-- Piso, paredes e teto obtidos a partir de texturas livres, por exemplo:
-  - Polyhaven
-  - CC0 Textures
+- Piso, paredes e teto obtidos a partir de texturas livres, por
+  [texture.com](https://www.textures.com/)
 
 **Bibliotecas:**
 
 - Three.js
 - React
-- GLTFLoader
 
 ## Equipe de Desenvolvimento
 
-- [Seu Nome]
-- [Nomes da Equipe se houver]
-
-## Vídeo de Demonstração
-
-Um vídeo curto (1-2 minutos) demonstrando a aplicação pode ser encontrado em:
-[Link do Vídeo (YouTube ou outro serviço)]
+- Matheus Viana
+- Thales Carretero Tonon
+- Webert
 
 ## Licença
 
