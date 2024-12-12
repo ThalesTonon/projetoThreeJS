@@ -344,13 +344,17 @@ const App = () => {
       {isStarted && (
         <div className="three-container" style={{ position: "relative" }}>
           {!isAvatarLoaded && <div>Carregando avatar...</div>}
-          {nearbyArtwork && (
+          {nearbyArtwork ? (
             <div className="artwork-info">
               <h2>{nearbyArtwork.name}</h2>
               <p>{nearbyArtwork.description}</p>
               <a href={nearbyArtwork.link} target="_blank" rel="noreferrer">
                 Saiba mais
               </a>
+            </div>
+          ) : (
+            <div className="info">
+              <p>Use as teclas W, A, S e D para se movimentar.</p>
             </div>
           )}
         </div>
