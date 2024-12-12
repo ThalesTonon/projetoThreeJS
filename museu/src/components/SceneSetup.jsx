@@ -73,15 +73,6 @@ const setupScene = (scene) => {
   ceiling.position.y = 3;
   scene.add(ceiling);
 
-  // Luminárias no teto
-  const luminariaPositions = [
-    [-5, 2.98, -5],
-    [5, 2.98, -5],
-    [-5, 2.98, 5],
-    [5, 2.98, 5],
-  ];
-  luminariaPositions.forEach(([x, y, z]) => addLuminaria(x, y, z, scene));
-
   // Luz direcional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
   directionalLight.position.set(5, 10, 5);
@@ -91,10 +82,6 @@ const setupScene = (scene) => {
   directionalLight.shadow.camera.near = 0.5;
   directionalLight.shadow.camera.far = 50;
   scene.add(directionalLight);
-
-  // Luz ambiente
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-  scene.add(ambientLight);
 };
 
 export default setupScene;

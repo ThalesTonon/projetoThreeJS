@@ -5,6 +5,25 @@ import setupScene from "./components/SceneSetup";
 import "./index.css";
 
 const App = () => {
+  const addLuminaria = (x, y, z, scene) => {
+    // Criar o círculo da luminária no teto
+    const circle = new THREE.Mesh(
+      new THREE.CircleGeometry(0.5, 32),
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: 0xffffff,
+        emissiveIntensity: 0.6,
+        side: THREE.DoubleSide,
+      })
+    );
+    circle.rotation.x = Math.PI / 2;
+    circle.position.set(x, y, z);
+
+    const pointLight = new THREE.PointLight(0xffe6b8, 1, 10);
+    pointLight.position.set(x, y - 0.2, z);
+
+    scene.add(circle, pointLight);
+  };
   const [isStarted, setIsStarted] = useState(false); // Controle do início da experiência
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false); // Controle de carregamento do avatar
   const [nearbyArtwork, setNearbyArtwork] = useState(null); // Obra de arte mais próxima do avatar
@@ -225,6 +244,8 @@ const App = () => {
 
     Promise.all(loadPromises).then((results) => {
       results.forEach(({ art, gltf }) => {
+        // Adicionar luz em ciam da obra
+        addLuminaria(art.position.x, 2.98, art.position.z, scene);
         const circleGeometry = new THREE.CircleGeometry(art.radius, 16);
         const circleMaterial = new THREE.MeshBasicMaterial({
           color: 0x118dd8,
