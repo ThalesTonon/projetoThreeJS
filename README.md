@@ -94,6 +94,9 @@ Ao entrar em um círculo azul, informações sobre a obra correspondente serão 
 **Modelos 3D:**
 
 - Adam (avatar): [Fonte do Modelo](https://www.mixamo.com/#/?page=1&query=adam&type=Character)
+- David (avatar): [Fonte do Modelo](https://www.mixamo.com/#/?page=1&query=david&type=Character)
+- Jody (avatar): [Fonte do Modelo](https://www.mixamo.com/#/?page=1&query=jody&type=Character)
+- Elizabeth (avatar): [Fonte do Modelo](https://www.mixamo.com/#/?page=1&query=elizabeth&type=Character)
 - Demais modelos (Buddha, Effigy, Angel Sculpture, etc.): Links e créditos conforme indicado no código e no projeto. Cada obra possui um link contextual no pop-up de informações. Fonte de todas as artes: [Sketchfab](https://sketchfab.com/)
   - [Buddha near Peshawar, Pakistan](https://sketchfab.com/3d-models/buddha-near-peshawar-pakistan-28f352a2a67f42c7a3f4b148410b3dce)
   - [Effigy of a Knight, Victoria and Albert Museum](https://sketchfab.com/3d-models/effigy-of-a-knight-victoria-and-albert-museum-74f83358216a4698b7322faa0132c78b)

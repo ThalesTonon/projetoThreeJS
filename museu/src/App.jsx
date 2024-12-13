@@ -3,10 +3,10 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import setupScene from "./components/SceneSetup";
 import "./index.css";
+import AvatarSelection from "./components/AvatarSelection";
 
 const App = () => {
   const addLuminaria = (x, y, z, scene) => {
-    // Criar o círculo da luminária no teto
     const circle = new THREE.Mesh(
       new THREE.CircleGeometry(0.5, 32),
       new THREE.MeshStandardMaterial({
@@ -27,6 +27,8 @@ const App = () => {
   const [isStarted, setIsStarted] = useState(false); // Controle do início da experiência
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false); // Controle de carregamento do avatar
   const [nearbyArtwork, setNearbyArtwork] = useState(null); // Obra de arte mais próxima do avatar
+  //URL do avatar
+  const [avatarURL, setAvatarURL] = useState("/adam.glb");
 
   useEffect(() => {
     if (!isStarted) return; // Não inicializa a cena até o botão de iniciar ser clicado
@@ -63,7 +65,7 @@ const App = () => {
 
     const loader = new GLTFLoader();
     loader.load(
-      "/adam.glb",
+      avatarURL,
       (gltf) => {
         const avatar = gltf.scene;
         avatar.scale.set(1, 1, 1);
@@ -155,7 +157,7 @@ const App = () => {
         description:
           "Esta é uma representação de Buda de 2.000 anos, encontrada próxima a Peshawar, no Paquistão. Este artefato da era Gandara é conhecido por sua fusão única de influências greco-romanas e indianas. Representa a serenidade do Buda e simboliza a disseminação do Budismo ao longo da Rota da Seda.",
         link: "https://en.wikipedia.org/wiki/Buddhism_in_Pakistan",
-        urlObj: "/buddha.glb",
+        urlObj: "/obras/buddha.glb",
         scale: { x: 2, y: 2, z: 2 },
         positionOffset: { x: 0, y: 1, z: 0 },
         rotationOffset: { x: 0, y: -28, z: 0 },
@@ -165,7 +167,7 @@ const App = () => {
         description:
           "Uma efígie de um cavaleiro em armadura completa, datada de 1340-1350, encontrada no Reino Unido. Representa um cavaleiro em oração, com as pernas cruzadas, simbolizando sua devoção e possivelmente uma cruzada. Esta peça é um exemplo impressionante da arte funerária medieval.",
         link: "https://collections.vam.ac.uk/item/O14763/recumbent-effigy-of-a-knight-effigy-unknown/",
-        urlObj: "/effigy.glb",
+        urlObj: "/obras/effigy.glb",
         scale: { x: 0.8, y: 0.8, z: 0.8 },
         positionOffset: { x: 0, y: 1.0, z: 0 },
         rotationOffset: { x: 0, y: -14, z: 0 },
@@ -175,7 +177,7 @@ const App = () => {
         description:
           "Uma escultura de mármore do século IV a.C., representando uma serva em posição de luto. Originária da Grécia antiga, esta peça fazia parte de um monumento funerário e simboliza o respeito e a reverência aos falecidos, refletindo as tradições funerárias gregas.",
         link: "https://artsandculture.google.com/asset/servant-girls-mourning-at-a-grave-unknown/2AHWogySHNOL6A?hl=en",
-        urlObj: "/mourning.glb",
+        urlObj: "/obras/mourning.glb",
         scale: { x: 2, y: 2, z: 2 },
         positionOffset: { x: 0, y: 0, z: 0 },
         rotationOffset: { x: 0, y: 6.28, z: 0 },
@@ -185,7 +187,7 @@ const App = () => {
         description:
           "Escultura renascentista criada por Matteo Civitali, representando um anjo em postura graciosa e em oração. Esta peça foi projetada para adornar um tabernáculo sagrado, destacando o senso de espiritualidade e a atenção aos detalhes típicos do Renascimento italiano.",
         link: "https://collections.vam.ac.uk/item/O12534/angel-statue-civitali-matteo/",
-        urlObj: "/angel_sculpture_by_matteo_civitali.glb",
+        urlObj: "/obras/angel_sculpture_by_matteo_civitali.glb",
         scale: { x: 2, y: 2, z: 2 },
         positionOffset: { x: 0, y: 1, z: 0 },
         rotationOffset: { x: 0, y: 2, z: 0 },
@@ -195,7 +197,7 @@ const App = () => {
         description:
           "Uma impressionante escultura gótica da Virgem Maria, datada de cerca de 1470 e originária de Estrasburgo. Representa Maria entronizada com o Menino Jesus, simbolizando sua maternidade divina e sua relevância no cristianismo medieval. Sua policromia original e os detalhes refinados destacam a maestria do estilo gótico.",
         link: "https://www.liebieghaus.de/en/mittelalter/virgin-mary-annunciation-group",
-        urlObj: "/muttergottes.glb",
+        urlObj: "/obras/muttergottes.glb",
         scale: { x: 4, y: 4, z: 4 },
         positionOffset: { x: 0, y: 1, z: 0 },
         rotationOffset: { x: 0, y: 0, z: 0 },
@@ -205,7 +207,7 @@ const App = () => {
         description:
           "Um cipo em forma de pilar, datado do período romano, encontrado na região do Mediterrâneo. Este tipo de monumento era frequentemente usado como marcador funerário ou como inscrição comemorativa. Decorado com relevos intrincados, ele reflete a estética e as práticas culturais da época.",
         link: "https://www.flickr.com/photos/carolemage/5343973958",
-        urlObj: "/pillar_cippus.glb",
+        urlObj: "/obras/pillar_cippus.glb",
         scale: { x: 1.5, y: 3, z: 1.5 },
         positionOffset: { x: 0, y: 0, z: 0 },
         rotationOffset: { x: 0, y: 0, z: 0 },
@@ -221,7 +223,7 @@ const App = () => {
       return {
         ...art,
         position: new THREE.Vector3(x, 0, z),
-        radius: 1, // Define o raio de interação do avatar com a obra
+        radius: 1,
       };
     });
 
@@ -241,7 +243,7 @@ const App = () => {
           );
         })
     );
-
+    // Adiciona as obras ao cenário
     Promise.all(loadPromises).then((results) => {
       results.forEach(({ art, gltf }) => {
         // Adicionar luz em ciam da obra
@@ -273,6 +275,7 @@ const App = () => {
     const animate = () => {
       requestAnimationFrame(animate);
 
+      // Atualiza a posição do avatar
       const delta = clock.getDelta();
       if (mixer) mixer.update(delta);
 
@@ -288,7 +291,7 @@ const App = () => {
         avatarGroup.position.add(velocity);
         constrainPosition(avatarGroup.position);
         velocity.multiplyScalar(0.9);
-
+        // Verifica se o avatar está próximo de alguma obra
         if (frameCount % 5 === 0) {
           let inRangeArtwork = null;
           for (const art of artworks) {
@@ -330,16 +333,18 @@ const App = () => {
       }
     };
   }, [isStarted]);
+  const handleReset = () => {
+    // Limpa o cache do navegador para forçar o recarregamento do avatar
+    window.location.reload();
+  };
 
   return (
     <>
       {!isStarted && (
-        <div className="welcome-screen">
-          <h1>Bem-vindo ao Museu Virtual</h1>
-          <p>Explore um mundo interativo e aprenda mais!</p>
-          <button onClick={() => setIsStarted(true)}>Iniciar</button>
-          <p>Por Matheus Viana, Thales e Webert</p>
-        </div>
+        <AvatarSelection
+          onSelectAvatar={setAvatarURL}
+          setIsStarted={setIsStarted}
+        />
       )}
       {isStarted && (
         <div className="three-container" style={{ position: "relative" }}>
@@ -353,10 +358,15 @@ const App = () => {
               </a>
             </div>
           ) : (
-            <div className="info">
-              <p>Use as teclas W, A, S e D para se movimentar.</p>
-            </div>
+            <>
+              <div className="info">
+                <p>Use as teclas W, A, S e D para se movimentar.</p>
+              </div>
+            </>
           )}
+          <div className="btnResetAvatar">
+            <button onClick={() => handleReset()}>Mudar Avatar</button>
+          </div>
         </div>
       )}
     </>

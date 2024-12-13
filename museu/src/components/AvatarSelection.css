@@ -1,0 +1,72 @@
+/* AvatarSelection.css */
+
+.avatar-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+.avatars {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.avatar-card {
+  width: 150px;
+  height: 200px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.avatar-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-image {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.avatar-name {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #95a5a6;
+}
