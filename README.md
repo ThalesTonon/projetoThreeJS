@@ -4,6 +4,10 @@
 
 Este projeto apresenta um museu virtual interativo desenvolvido em Three.js, no qual o usuário pode explorar um ambiente 3D, visualizar obras de arte antigas e acessar informações adicionais sobre elas. A aplicação permite a navegação em terceira pessoa, exibindo um avatar no ambiente, bem como o carregamento de vários modelos 3D texturizados e iluminados de forma realista.
 
+## Vídeo no Youtube
+
+[Projeto Museu Virtual - Three.js + React Vite](https://youtu.be/GpdEfzc8W7w)
+
 **Principais funcionalidades:**
 
 - **Iluminação realista:**  
@@ -22,6 +26,10 @@ Este projeto apresenta um museu virtual interativo desenvolvido em Three.js, no 
 
 - [Three.js](https://threejs.org/) para renderização 3D.
 - [React](https://reactjs.org/) para estruturação da interface e componentes.
+
+## Deploy do projeto na WEB
+
+[Acesse aqui](https://museuvirtual.vercel.app/)
 
 ## Como Executar o Projeto Localmente
 
